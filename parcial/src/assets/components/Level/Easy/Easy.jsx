@@ -16,23 +16,15 @@ const EasyQuiz = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedQuestions = localStorage.getItem('easyQuizQuestions');
-        if (storedQuestions) {
-          const storedIndex = localStorage.getItem('easyQuizIndex');
-          setQuestions(JSON.parse(storedQuestions));
-          setCurrentQuestionIndex(storedIndex ? parseInt(storedIndex, 10) : 0);
-        } else {
-          const uniqueToken = Date.now().toString();
-          const easyQuestions = await fetchEasyQuestions(uniqueToken);
-          setQuestions(easyQuestions);
-          localStorage.setItem('easyQuizQuestions', JSON.stringify(easyQuestions));
-          localStorage.setItem('easyQuizIndex', '0');
-        }
-
-        const storedAnswers = localStorage.getItem('easyQuizAnswers');
-        if (storedAnswers) {
-          setSelectedAnswers(JSON.parse(storedAnswers));
-        }
+        const uniqueToken = Date.now().toString();
+        const easyQuestions = await fetchEasyQuestions(uniqueToken);
+        setQuestions(easyQuestions);
+        setCurrentQuestionIndex(0);
+        setSelectedAnswers(Array(easyQuestions.length).fill(null));
+        setCorrectAnswers(0);
+        setIncorrectAnswers(0);
+        setQuizFinished(false);
+        setShowResults(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -87,11 +79,20 @@ const EasyQuiz = () => {
     navigate('/Level');
   };
 
-  const restartQuiz = () => {
-    setQuizFinished(false);
-    setShowResults(false);
-    setCurrentQuestionIndex(0);
-    setSelectedAnswers(Array(10).fill(null));
+  const restartQuiz = async () => {
+    try {
+      const uniqueToken = Date.now().toString();
+      const easyQuestions = await fetchEasyQuestions(uniqueToken);
+      setQuestions(easyQuestions);
+      setCurrentQuestionIndex(0);
+      setSelectedAnswers(Array(easyQuestions.length).fill(null));
+      setCorrectAnswers(0);
+      setIncorrectAnswers(0);
+      setQuizFinished(false);
+      setShowResults(false);
+    } catch (error) {
+      console.error('Error restarting quiz:', error);
+    }
   };
 
   const calculateResults = () => {
