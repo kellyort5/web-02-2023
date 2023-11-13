@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchMediumQuestions } from '../../Services/api';
 import { useNavigate } from 'react-router-dom';
+import '../difficultyStyle.css';
 
 const MediumQuiz = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const MediumQuiz = () => {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,9 +47,14 @@ const MediumQuiz = () => {
   }, [selectedAnswers]);
 
   const shuffleAnswers = (currentQuestion) => {
-    const answers = [...currentQuestion?.incorrect_answers, currentQuestion?.correct_answer];
+    if (!currentQuestion || !currentQuestion.incorrect_answers || !currentQuestion.correct_answer) {
+      return [];
+    }
+  
+    const answers = [...currentQuestion.incorrect_answers, currentQuestion.correct_answer];
     return answers.sort(() => Math.random() - 0.5);
   };
+  
 
   const nextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
@@ -60,6 +67,7 @@ const MediumQuiz = () => {
     } else {
       setQuizFinished(true);
       calculateResults();
+      setShowResults(true);
     }
   };
 
@@ -79,10 +87,20 @@ const MediumQuiz = () => {
     navigate('/Level');
   };
 
-  const restartQuiz = () => {
-    setQuizFinished(false);
-    setCurrentQuestionIndex(0);
-    setSelectedAnswers(Array(10).fill(null));
+  const restartQuiz = async () => {
+    try {
+      const uniqueToken = Date.now().toString();
+      const mediumQuestions = await fetchMediumQuestions(uniqueToken);
+      setQuestions(mediumQuestions);
+      setCurrentQuestionIndex(0);
+      setSelectedAnswers(Array(mediumQuestions.length).fill(null));
+      setCorrectAnswers(0);
+      setIncorrectAnswers(0);
+      setQuizFinished(false);
+      setShowResults(false);
+    } catch (error) {
+      console.error('Error restarting quiz:', error);
+    }
   };
 
   const calculateResults = () => {
@@ -103,57 +121,65 @@ const MediumQuiz = () => {
 
   return (
     <div className='d-container'>
-      {quizFinished ? (
+      {showResults ? (
         <>
           <p>¡Quizz finalizado!</p>
           <p>Respuestas Correctas: {correctAnswers}</p>
           <p>Respuestas Incorrectas: {incorrectAnswers}</p>
-          <button onClick={restartQuiz}>Reiniciar Quizz</button>
-          <button onClick={returnToLevel}>Regresar a Level</button>
         </>
       ) : (
         <>
           <div className='questions-p'>
             <h2>Pregunta {currentQuestionIndex + 1}</h2>
-            {questions.length > 0 && currentQuestionIndex < questions.length && (
-              <>
-                <p>{questions[currentQuestionIndex]?.question}</p>
-                <ul>
-                  {shuffleAnswers(questions[currentQuestionIndex]).map((answer, index) => (
-                    <li key={index}>
-                      <button
-                        onClick={() => handleAnswerSelection(answer)}
-                        disabled={selectedAnswers[currentQuestionIndex] !== null}
-                        style={{
-                          backgroundColor:
-                            answer === selectedAnswers[currentQuestionIndex]
-                              ? answer === questions[currentQuestionIndex]?.correct_answer
-                                ? 'green'
-                                : 'red'
-                              : '',
-                        }}
-                      >
-                        {answer}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-                {selectedAnswers[currentQuestionIndex] !== null && (
-                  <p>Respuesta Correcta: {questions[currentQuestionIndex]?.correct_answer}</p>
-                )}
-                <button onClick={prevQuestion} disabled={currentQuestionIndex === 0}>
-                  Anterior
-                </button>
-                <button onClick={nextQuestion}>
-                  {currentQuestionIndex === questions.length - 1 ? 'Finalizar Quizz' : 'Siguiente'}
-                </button>
-              </>
+            <p>{questions[currentQuestionIndex]?.question}</p>
+            <p>{'Category: ' + questions[currentQuestionIndex]?.category}</p>
+            <p>{'Difficulty: '+ questions[currentQuestionIndex]?.difficulty}</p>
+            <ul>
+              {shuffleAnswers(questions[currentQuestionIndex]).map((answer, index) => (
+                <li key={index}>
+                  <button
+                    onClick={() => handleAnswerSelection(answer)}
+                    disabled={selectedAnswers[currentQuestionIndex] !== null}
+                    style={{
+                      backgroundColor:
+                        answer === selectedAnswers[currentQuestionIndex]
+                          ? answer === questions[currentQuestionIndex]?.correct_answer
+                            ? 'green'
+                            : 'red'
+                          : '',
+                    }}
+                  >
+                    {answer}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {selectedAnswers[currentQuestionIndex] !== null && (
+              <p>Respuesta Correcta: {questions[currentQuestionIndex]?.correct_answer}</p>
             )}
-            {questions.length === 0 && <p>Cargando preguntas...</p>}
-            {questions.length === 0 && <p>Error al cargar preguntas.</p>}
-          </div>     
+          </div>
         </>
       )}
+
+      <div className='last-section'>
+        {quizFinished && (
+          <>
+            <button onClick={restartQuiz}>Reiniciar Quizz</button>
+            <button onClick={returnToLevel}>Regresar a Level</button>
+          </>
+        )}
+
+        {!showResults && (
+          <>
+            <button onClick={prevQuestion} disabled={currentQuestionIndex === 0}>
+              Anterior
+            </button>
+            <button onClick={nextQuestion}>
+              {currentQuestionIndex === questions.length - 1 ? 'Finalizar Quizz' : 'Siguiente'}
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 };
