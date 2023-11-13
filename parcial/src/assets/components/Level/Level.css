@@ -1,12 +1,12 @@
-div{
+.d-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    margin: 1px auto;
+    margin: 100px auto;
     max-width: 400px;
-    padding: 15px;
+    padding: 20px;
 }
 
 button{
@@ -16,7 +16,16 @@ button{
     height: 50px;
     width: 40rem;
     border-radius: 5px;
-    margin-top: 5px;
+    margin-top: 10px;
     cursor: pointer;
-}
 
+}
+.easy{
+    background-color: green;
+}
+.medium{
+    background-color: orange;
+}
+.hard{
+    background-color: red;
+}

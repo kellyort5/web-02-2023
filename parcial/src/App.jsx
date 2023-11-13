@@ -1,8 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './assets/components/Home/Home';
-import QuizConfig from './assets/components/Questions/QuizConfig';
-import QuestionList from './assets/components/Questions/QuestionList';
-import { QuizzSaved } from "./assets/components/Quizz/QuizzSaved";
+import Level from './assets/components/Level/Level';
+import Easy from './assets/components/Level/Easy/Easy';
+import Medium from './assets/components/Level/Medium/Medium';
+import Hard from './assets/components/Level/Hard/Hard';
+
 
 function App() {
 
@@ -11,9 +13,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home/>} />
-          <Route path="/Quizzes" element={<QuizConfig/>} />
-          <Route path="/questions" element={<QuestionList/>} />
-          <Route path="/quizzSaved" element={<QuizzSaved/>} />
+          <Route path="/Level" element={<Level/>} />
+          <Route path="/Easy" element={<Easy/>} />
+          <Route path="/Medium" element={<Medium/>} />
+          <Route path="/Hard" element={<Hard/>} />
+
         </Routes>
       </BrowserRouter>
     </>
