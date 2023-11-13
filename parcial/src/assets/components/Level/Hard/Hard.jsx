@@ -189,9 +189,6 @@ const HardQuiz = () => {
             <button onClick={nextQuestion}>
               {currentQuestionIndex === questions.length - 1 ? 'Finalizar Quizz' : 'Siguiente'}
             </button>
-            {currentQuestionIndex === questions.length - 1 && (
-              <button onClick={finishQuiz}>Finalizar Quizz</button>
-            )}
           </>
         )}
       </div>
