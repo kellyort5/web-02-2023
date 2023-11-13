@@ -1,0 +1,29 @@
+.d-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 200px auto;
+    max-width: 400px;
+    padding: 20px; 
+    
+}
+
+.d-container p{
+    font-size: 1.5em;
+}
+
+.questions-p p {
+    margin-top: 20px;
+    font-size: 1.5em; 
+} 
+
+.d-container ul {
+    margin-top: 10px;
+    list-style: none;
+}
+
+.last-section {
+    margin-top: 20px;
+}

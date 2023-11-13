@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { fetchHardQuestions } from '../../Services/api';
 import { useNavigate } from 'react-router-dom';
+import '../difficultyStyle.css';
+
 
 const HardQuiz = () => {
   const navigate = useNavigate();
@@ -75,10 +77,6 @@ const HardQuiz = () => {
     });
   };
 
-  const finishQuiz = () => {
-    setQuizFinished(true);
-    calculateResults();
-  };
 
   const returnToLevel = () => {
     navigate('/Level');

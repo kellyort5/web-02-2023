@@ -75,11 +75,6 @@ const MediumQuiz = () => {
     });
   };
 
-  const finishQuiz = () => {
-    setQuizFinished(true);
-    calculateResults();
-  };
-
   const returnToLevel = () => {
     navigate('/Level');
   };
@@ -107,7 +102,7 @@ const MediumQuiz = () => {
   };
 
   return (
-    <div>
+    <div className='d-container'>
       {quizFinished ? (
         <>
           <p>¡Quizz finalizado!</p>
@@ -118,43 +113,45 @@ const MediumQuiz = () => {
         </>
       ) : (
         <>
-          <h2>Pregunta {currentQuestionIndex + 1}</h2>
-          {questions.length > 0 && currentQuestionIndex < questions.length && (
-            <>
-              <p>{questions[currentQuestionIndex]?.question}</p>
-              <ul>
-                {shuffleAnswers(questions[currentQuestionIndex]).map((answer, index) => (
-                  <li key={index}>
-                    <button
-                      onClick={() => handleAnswerSelection(answer)}
-                      disabled={selectedAnswers[currentQuestionIndex] !== null}
-                      style={{
-                        backgroundColor:
-                          answer === selectedAnswers[currentQuestionIndex]
-                            ? answer === questions[currentQuestionIndex]?.correct_answer
-                              ? 'green'
-                              : 'red'
-                            : '',
-                      }}
-                    >
-                      {answer}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              {selectedAnswers[currentQuestionIndex] !== null && (
-                <p>Respuesta Correcta: {questions[currentQuestionIndex]?.correct_answer}</p>
-              )}
-              <button onClick={prevQuestion} disabled={currentQuestionIndex === 0}>
-                Anterior
-              </button>
-              <button onClick={nextQuestion}>
-                {currentQuestionIndex === questions.length - 1 ? 'Finalizar Quizz' : 'Siguiente'}
-              </button>
-            </>
-          )}
-          {questions.length === 0 && <p>Cargando preguntas...</p>}
-          {questions.length === 0 && <p>Error al cargar preguntas.</p>}
+          <div className='questions-p'>
+            <h2>Pregunta {currentQuestionIndex + 1}</h2>
+            {questions.length > 0 && currentQuestionIndex < questions.length && (
+              <>
+                <p>{questions[currentQuestionIndex]?.question}</p>
+                <ul>
+                  {shuffleAnswers(questions[currentQuestionIndex]).map((answer, index) => (
+                    <li key={index}>
+                      <button
+                        onClick={() => handleAnswerSelection(answer)}
+                        disabled={selectedAnswers[currentQuestionIndex] !== null}
+                        style={{
+                          backgroundColor:
+                            answer === selectedAnswers[currentQuestionIndex]
+                              ? answer === questions[currentQuestionIndex]?.correct_answer
+                                ? 'green'
+                                : 'red'
+                              : '',
+                        }}
+                      >
+                        {answer}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                {selectedAnswers[currentQuestionIndex] !== null && (
+                  <p>Respuesta Correcta: {questions[currentQuestionIndex]?.correct_answer}</p>
+                )}
+                <button onClick={prevQuestion} disabled={currentQuestionIndex === 0}>
+                  Anterior
+                </button>
+                <button onClick={nextQuestion}>
+                  {currentQuestionIndex === questions.length - 1 ? 'Finalizar Quizz' : 'Siguiente'}
+                </button>
+              </>
+            )}
+            {questions.length === 0 && <p>Cargando preguntas...</p>}
+            {questions.length === 0 && <p>Error al cargar preguntas.</p>}
+          </div>     
         </>
       )}
     </div>

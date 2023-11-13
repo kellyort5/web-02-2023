@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchEasyQuestions } from '../../Services/api';
 import { useNavigate } from 'react-router-dom';
+import '../difficultyStyle.css';
 
 const EasyQuiz = () => {
   const navigate = useNavigate();
@@ -69,11 +70,7 @@ const EasyQuiz = () => {
     });
   };
 
-  const finishQuiz = () => {
-    setQuizFinished(true);
-    calculateResults();
-    setShowResults(true);
-  };
+  
 
   const returnToLevel = () => {
     navigate('/Level');
@@ -119,7 +116,7 @@ const EasyQuiz = () => {
   const shuffledAnswers = shuffleAnswers(currentQuestion);
 
   return (
-    <div>
+    <div className='d-container'>
       {showResults ? (
         <>
           <p>¡Quizz finalizado!</p>
@@ -128,35 +125,39 @@ const EasyQuiz = () => {
         </>
       ) : (
         <>
-          <h2>Pregunta {currentQuestionIndex + 1}</h2>
-          <p>{currentQuestion.question}</p>
-          <ul>
-            {shuffledAnswers.map((answer, index) => (
-              <li key={index}>
-                <button
-                  onClick={() => handleAnswerSelection(answer)}
-                  disabled={selectedAnswers[currentQuestionIndex] !== null}
-                  style={{
-                    backgroundColor:
-                      answer === selectedAnswers[currentQuestionIndex]
-                        ? answer === currentQuestion.correct_answer
-                          ? 'green'
-                          : 'red'
-                        : '',
-                  }}
-                >
-                  {answer}
-                </button>
-              </li>
-            ))}
-          </ul>
-          {selectedAnswers[currentQuestionIndex] !== null && (
-            <p>Respuesta Correcta: {currentQuestion.correct_answer}</p>
-          )}
+          <div className='questions-p'>
+            <h2>Pregunta {currentQuestionIndex + 1}</h2>
+            <p>{currentQuestion.question}</p>
+            <p>{'Category: ' + currentQuestion.category}</p>
+            <p>{'Difficulty: '+ currentQuestion.difficulty}</p>
+            <ul>
+              {shuffledAnswers.map((answer, index) => (
+                <li key={index}>
+                  <button
+                    onClick={() => handleAnswerSelection(answer)}
+                    disabled={selectedAnswers[currentQuestionIndex] !== null}
+                    style={{
+                      backgroundColor:
+                        answer === selectedAnswers[currentQuestionIndex]
+                          ? answer === currentQuestion.correct_answer
+                            ? 'green'
+                            : 'red'
+                          : '',
+                    }}
+                  >
+                    {answer}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {selectedAnswers[currentQuestionIndex] !== null && (
+              <p>Respuesta Correcta: {currentQuestion.correct_answer}</p>
+            )}
+          </div>
         </>
       )}
 
-      <div>
+      <div className='last-section'>
         {quizFinished && (
           <>
             <button onClick={restartQuiz}>Reiniciar Quizz</button>
@@ -172,9 +173,12 @@ const EasyQuiz = () => {
             <button onClick={nextQuestion}>
               {currentQuestionIndex === questions.length - 1 ? 'Finalizar Quizz' : 'Siguiente'}
             </button>
+            
           </>
         )}
+
       </div>
+      
     </div>
   );
 };
